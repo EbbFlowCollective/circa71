@@ -5,34 +5,50 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>c.71</title>
   <style>
-    html, body { height: 100%; margin: 0; background: #000; }
-    body { overflow: hidden; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+    :root { --bg:#000; --fg:#fff; }
+    html, body { margin:0; background:var(--bg); color:var(--fg); }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
 
-    /* Background slideshow */
-    .stage {
-      position: fixed; inset: 0;
-      display: grid; place-items: center;
-      background: #000;
+    /* --- HERO (above the fold) --- */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      background: var(--bg);
+      overflow: hidden;
     }
+
+    /* Slideshow stage: starts invisible, then fades in */
+    .stage {
+      position: absolute;
+      inset: 0;
+      background: var(--bg);
+      opacity: 0;
+      transition: opacity 1600ms ease;
+    }
+    .stage.on { opacity: 1; }
+
     .slide {
       position: absolute; inset: 0;
       background-position: center;
       background-size: cover;
       opacity: 0;
       transition: opacity 1200ms ease;
-      filter: saturate(1.03) contrast(1.03);
       transform: scale(1.02);
+      filter: saturate(1.03) contrast(1.03);
     }
     .slide.active { opacity: 1; }
 
-    /* Gentle vignette + readability */
+    /* Gentle vignette for readability + cohesion */
     .vignette {
       position: absolute; inset: 0;
-      background: radial-gradient(circle at center, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.72) 75%, rgba(0,0,0,0.92) 100%);
+      background: radial-gradient(circle at center,
+        rgba(0,0,0,0.08) 0%,
+        rgba(0,0,0,0.70) 75%,
+        rgba(0,0,0,0.92) 100%);
       pointer-events: none;
     }
 
-    /* Corner mark */
+    /* Mark stays constant */
     .mark {
       position: fixed;
       right: 48px;
@@ -42,41 +58,92 @@
       line-height: 1.15;
       letter-spacing: 0.2px;
       user-select: none;
+      z-index: 10;
     }
     .mark .name { font-size: 26px; font-weight: 600; }
-    .mark .tag { font-size: 16px; opacity: 0.92; margin-top: 6px; }
+    .mark .tag  { font-size: 16px; opacity: 0.92; margin-top: 6px; }
 
-    /* Mobile spacing */
     @media (max-width: 640px) {
       .mark { right: 20px; bottom: 18px; }
       .mark .name { font-size: 22px; }
-      .mark .tag { font-size: 14px; }
+      .mark .tag  { font-size: 14px; }
+    }
+
+    /* --- BELOW THE FOLD --- */
+    .below {
+      max-width: 760px;
+      padding: 12vh 8vw 14vh 8vw;
+      background: var(--bg);
+    }
+    .ethos {
+      font-size: 18px;
+      line-height: 1.7;
+      letter-spacing: 0.01em;
+      opacity: 0.92;
+      white-space: pre-line;
+      margin: 0;
+    }
+    .contact {
+      margin-top: 10vh;
+      font-size: 14px;
+      opacity: 0.85;
+    }
+    .contact a {
+      color: var(--fg);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,0.25);
+      padding-bottom: 2px;
+    }
+    .contact a:hover {
+      border-bottom-color: rgba(255,255,255,0.6);
+    }
+
+    /* Respect reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .stage { transition: none; opacity: 1; }
+      .slide { transition: none; }
     }
   </style>
 </head>
 
 <body>
-  <div class="stage" aria-label="Background reel">
-    <div class="slide active" id="slideA"></div>
-    <div class="slide" id="slideB"></div>
-    <div class="vignette"></div>
-  </div>
+  <section class="hero" aria-label="c.71 arrival">
+    <div class="stage" id="stage" aria-label="Background reel">
+      <div class="slide active" id="slideA"></div>
+      <div class="slide" id="slideB"></div>
+      <div class="vignette"></div>
+    </div>
+  </section>
 
-  <div class="mark">
+  <div class="mark" aria-label="c.71 Signed quietly.">
     <div class="name">c.71</div>
     <div class="tag">Signed quietly.</div>
   </div>
 
+  <section class="below" aria-label="Circa 71 ethos">
+    <p class="ethos">
+Circa 71 exists to tell stories from close enough to feel.
+We believe intimacy is not created through performance, polish, or persuasion,
+but through presence — the patient act of standing near a subject long enough
+for truth to surface on its own terms.
+    </p>
+
+    <div class="contact">
+      <a href="mailto:hello@circa71.co">hello@circa71.co</a>
+    </div>
+  </section>
+
   <script>
     // IMPORTANT: match filenames EXACTLY as committed (case-sensitive on GitHub Pages)
     const images = [
-      "assets/still-01.JPG",
+      "assets/still-01.JPG", // bookend (rear / silhouette)
       "assets/still-02.JPG",
       "assets/still-03.JPG",
       "assets/still-04.JPG",
-      "assets/still-05.JPG",
+      "assets/still-05.JPG"  // bookend (front / working)
     ];
 
+    const stage = document.getElementById("stage");
     const A = document.getElementById("slideA");
     const B = document.getElementById("slideB");
 
@@ -87,17 +154,31 @@
       el.style.backgroundImage = `url('${src}')`;
     }
 
-    // Preload (reduces first-cycle flicker)
+    // Preload to reduce flicker
     images.forEach(src => { const i = new Image(); i.src = src; });
 
-    // Initialize
+    // Initialize first frame (still hidden until "arrival" delay ends)
     setBg(A, images[idx]);
 
-    // Timing (tweak to taste)
-    const HOLD_MS = 5200; // how long each still sits
-    const FADE_MS = 1200; // must match CSS transition (1200ms)
+    // Arrival timing: black screen first, then gentle reveal
+    const ARRIVAL_BLACK_MS = 1800;   // adjust 1200–2500 to taste
 
-    setInterval(() => {
+    // Linger timing: bookends (1 & 5) hold longer
+    const HOLD_BOOKEND_MS = 7800;
+    const HOLD_MIDDLE_MS  = 6100;
+
+    // Fade timing must match CSS transition on .slide
+    const FADE_MS = 1200;
+
+    // Helper: which hold time should this index use?
+    function holdForIndex(i) {
+      const isFirst = (i === 0);
+      const isLast  = (i === images.length - 1);
+      return (isFirst || isLast) ? HOLD_BOOKEND_MS : HOLD_MIDDLE_MS;
+    }
+
+    // Slideshow runner using timeouts (supports per-frame hold times)
+    function advance() {
       idx = (idx + 1) % images.length;
 
       const next = images[idx];
@@ -109,7 +190,22 @@
       outgoing.classList.remove("active");
 
       showingA = !showingA;
-    }, HOLD_MS);
+
+      setTimeout(advance, holdForIndex(idx));
+    }
+
+    // Start after the arrival pause (unless reduced motion)
+    const reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (!reducedMotion) {
+      setTimeout(() => {
+        stage.classList.add("on");         // fade images in over the black
+        setTimeout(() => advance(), holdForIndex(idx)); // begin rhythm
+      }, ARRIVAL_BLACK_MS);
+    } else {
+      // Reduced motion: show first frame, no timed cycling
+      stage.classList.add("on");
+    }
   </script>
 </body>
 </html>
