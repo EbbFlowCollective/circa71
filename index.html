@@ -6,6 +6,7 @@
   <title>c.71</title>
   <style>
     :root { --bg:#000; --fg:#fff; }
+
     html, body { margin:0; background:var(--bg); color:var(--fg); }
     body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
 
@@ -17,7 +18,7 @@
       overflow: hidden;
     }
 
-    /* Slideshow stage: starts invisible, then fades in */
+    /* Slideshow stage starts invisible (pure black arrival), then fades in */
     .stage {
       position: absolute;
       inset: 0;
@@ -27,6 +28,7 @@
     }
     .stage.on { opacity: 1; }
 
+    /* Crossfade layers */
     .slide {
       position: absolute; inset: 0;
       background-position: center;
@@ -34,11 +36,12 @@
       opacity: 0;
       transition: opacity 1200ms ease;
       transform: scale(1.02);
+      /* subtle, unified feel without "filter" energy */
       filter: saturate(1.03) contrast(1.03);
     }
     .slide.active { opacity: 1; }
 
-    /* Gentle vignette for readability + cohesion */
+    /* Gentle vignette for cohesion + signature readability */
     .vignette {
       position: absolute; inset: 0;
       background: radial-gradient(circle at center,
@@ -48,7 +51,7 @@
       pointer-events: none;
     }
 
-    /* Mark stays constant */
+    /* Signature mark stays constant */
     .mark {
       position: fixed;
       right: 48px;
@@ -75,6 +78,7 @@
       padding: 12vh 8vw 14vh 8vw;
       background: var(--bg);
     }
+
     .ethos {
       font-size: 18px;
       line-height: 1.7;
@@ -83,8 +87,16 @@
       white-space: pre-line;
       margin: 0;
     }
+
+    .threshold {
+      margin-top: 8vh;
+      font-size: 14px;
+      letter-spacing: 0.01em;
+      opacity: 0.85;
+    }
+
     .contact {
-      margin-top: 10vh;
+      margin-top: 2.2vh;
       font-size: 14px;
       opacity: 0.85;
     }
@@ -120,27 +132,28 @@
     <div class="tag">Signed quietly.</div>
   </div>
 
-  <section class="below" aria-label="Circa 71 ethos">
+  <section class="below" aria-label="Circa 71 statement and contact">
     <p class="ethos">
-Circa 71 exists to tell stories from close enough to feel.
-We believe intimacy is not created through performance, polish, or persuasion,
-but through presence — the patient act of standing near a subject long enough
-for truth to surface on its own terms.
+Stories from close enough to feel.
+Made with restraint, time, and care.
+Presence before performance.
+Crafted in proximity.
     </p>
 
+    <div class="threshold">By referral and invitation.</div>
     <div class="contact">
       <a href="mailto:hello@circa71.co">hello@circa71.co</a>
     </div>
   </section>
 
   <script>
-    // IMPORTANT: match filenames EXACTLY as committed (case-sensitive on GitHub Pages)
+    // IMPORTANT: match filenames EXACTLY (case-sensitive on GitHub Pages)
     const images = [
-      "assets/still-01.JPG", // bookend (rear / silhouette)
+      "assets/still-01.JPG", // bookend
       "assets/still-02.JPG",
       "assets/still-03.JPG",
       "assets/still-04.JPG",
-      "assets/still-05.JPG"  // bookend (front / working)
+      "assets/still-05.JPG"  // bookend
     ];
 
     const stage = document.getElementById("stage");
@@ -157,20 +170,16 @@ for truth to surface on its own terms.
     // Preload to reduce flicker
     images.forEach(src => { const i = new Image(); i.src = src; });
 
-    // Initialize first frame (still hidden until "arrival" delay ends)
+    // Initialize first frame (still hidden until arrival delay ends)
     setBg(A, images[idx]);
 
-    // Arrival timing: black screen first, then gentle reveal
-    const ARRIVAL_BLACK_MS = 1800;   // adjust 1200–2500 to taste
+    // Arrival timing: pure black first, then reveal
+    const ARRIVAL_BLACK_MS = 2500;
 
-    // Linger timing: bookends (1 & 5) hold longer
+    // Per-frame linger: bookends (first & last) hold longer
     const HOLD_BOOKEND_MS = 7800;
     const HOLD_MIDDLE_MS  = 6100;
 
-    // Fade timing must match CSS transition on .slide
-    const FADE_MS = 1200;
-
-    // Helper: which hold time should this index use?
     function holdForIndex(i) {
       const isFirst = (i === 0);
       const isLast  = (i === images.length - 1);
@@ -194,13 +203,14 @@ for truth to surface on its own terms.
       setTimeout(advance, holdForIndex(idx));
     }
 
-    // Start after the arrival pause (unless reduced motion)
-    const reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reducedMotion =
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (!reducedMotion) {
       setTimeout(() => {
-        stage.classList.add("on");         // fade images in over the black
-        setTimeout(() => advance(), holdForIndex(idx)); // begin rhythm
+        stage.classList.add("on");                 // fade images in over black
+        setTimeout(() => advance(), holdForIndex(idx));
       }, ARRIVAL_BLACK_MS);
     } else {
       // Reduced motion: show first frame, no timed cycling
