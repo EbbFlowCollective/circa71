@@ -5,8 +5,21 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>c.71</title>
   <style>
-    html, body { height: 100%; margin: 0; background: #000; color: #fff; }
+    :root {
+      --bg: #000;
+      --fg: #fff;
+    }
+    html, body { height: 100%; margin: 0; background: var(--bg); color: var(--fg); }
     body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+
+    /* First screen stays a quiet field */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      background: var(--bg);
+    }
+
+    /* Signature stays fixed, as before */
     .mark {
       position: fixed;
       right: 6vw;
@@ -14,15 +27,61 @@
       line-height: 1.35;
       letter-spacing: 0.01em;
       text-align: left;
+      z-index: 10;
     }
     .sig { font-size: 22px; }
     .sub { font-size: 14px; opacity: 0.9; }
+
+    /* Below fold content */
+    .below {
+      max-width: 720px;
+      padding: 12vh 8vw 14vh 8vw;
+    }
+    .ethos {
+      font-size: 18px;
+      line-height: 1.65;
+      letter-spacing: 0.01em;
+      opacity: 0.92;
+      margin: 0 0 7vh 0;
+      white-space: pre-line;
+    }
+    .contact {
+      font-size: 14px;
+      opacity: 0.85;
+      margin-top: 10vh;
+    }
+    .contact a {
+      color: var(--fg);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,0.25);
+      padding-bottom: 2px;
+    }
+    .contact a:hover {
+      border-bottom-color: rgba(255,255,255,0.6);
+    }
   </style>
 </head>
+
 <body>
-  <div class="mark" aria-label="c.71 Signed quietly.">
-    <div class="sig">c.71</div>
-    <div class="sub">Signed quietly.</div>
-  </div>
+  <section class="hero" aria-label="c.71">
+    <div class="mark" aria-label="c.71 Signed quietly.">
+      <div class="sig">c.71</div>
+      <div class="sub">Signed quietly.</div>
+    </div>
+  </section>
+
+  <section class="below" aria-label="Circa 71 statement and contact">
+    <p class="ethos">
+Circa 71 exists to tell stories from close enough to feel.
+We believe intimacy is not created through performance, polish, or persuasion,
+but through presence — the patient act of standing near a subject long enough
+for truth to surface on its own terms.
+    </p>
+
+    <div class="contact">
+      <a href="mailto:hello@circa71.co">hello@circa71.co</a>
+    </div>
+  </section>
 </body>
 </html>
+
