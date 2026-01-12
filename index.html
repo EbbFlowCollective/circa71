@@ -131,4 +131,82 @@
 
     /* Subtle spacing on large screens */
     @media (min-width: 860px) {
-      .grid { gap: 28px;
+      .grid { gap: 28px; }
+    }
+
+    /* Reduce motion accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      .ethos, .mark, img {
+        transition: none !important;
+        transform: none !important;
+        opacity: 1 !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Bottom-right signature -->
+  <div class="mark" id="mark">
+    <div class="c71">c.71</div>
+    <div class="signed">signed quietly</div>
+  </div>
+
+  <!-- Intro -->
+  <section class="intro">
+    <div class="ethos" id="ethos">
+      <div class="lead">Stories from close enough to feel.</div>
+      <p>Made with restraint.</p>
+      <p>Crafted in proximity.</p>
+    </div>
+  </section>
+
+  <!-- Gallery -->
+  <section class="gallery">
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <script>
+    // 1) UPDATE THESE FILENAMES to match your /assets/ folder.
+    // Put your images in: /assets/ (same repo)
+    const IMAGES = [
+      "still-01.JPG",
+      "still-02.JPG",
+      "still-03.JPG",
+      "still-04.JPG",
+      "still-05.JPG",
+      // Add/remove as needed
+    ];
+
+    const grid = document.getElementById("grid");
+
+    // Build gallery
+    IMAGES.forEach((src) => {
+      const fig = document.createElement("figure");
+      const img = document.createElement("img");
+      img.loading = "lazy";
+      img.decoding = "async";
+      img.alt = "";
+      img.src = src;
+      fig.appendChild(img);
+      grid.appendChild(fig);
+    });
+
+    // Fade-in observers
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) e.target.classList.add("is-visible");
+      });
+    }, { threshold: 0.12 });
+
+    // Intro + mark appear on load
+    window.addEventListener("load", () => {
+      document.getElementById("ethos").classList.add("is-visible");
+      document.getElementById("mark").classList.add("is-visible");
+      document.querySelectorAll("img").forEach((img) => observer.observe(img));
+    });
+  </script>
+
+</body>
+</html>
