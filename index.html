@@ -6,57 +6,129 @@
   <title>Circa 71</title>
 
   <style>
+    :root {
+      --bg: #000;
+      --fg: #f2f2f2;
+      --muted: rgba(242,242,242,.65);
+    }
+
+    * { box-sizing: border-box; }
+
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
-      background: #ffffff;
-      color: #111111;
+      background: var(--bg);
+      color: var(--fg);
       font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
 
-    body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    /* Intro */
+    .intro {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 6vh 6vw;
     }
 
-    .container {
+    .ethos {
       text-align: center;
-      max-width: 680px;
-      padding: 2rem;
+      max-width: 60rem;
+      line-height: 1.55;
+      letter-spacing: 0.01em;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 900ms ease, transform 900ms ease;
     }
 
-    .copy {
-      font-size: 1.25rem;
-      line-height: 1.6;
-      letter-spacing: 0.02em;
+    .ethos.is-visible {
+      opacity: 1;
+      transform: translateY(0);
     }
 
-    .copy p {
-      margin: 0.6rem 0;
+    .ethos .lead {
+      font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+      font-weight: 600;
+      margin: 0 0 0.9rem 0;
     }
 
-    footer {
-      margin-top: 3rem;
-      font-size: 0.75rem;
-      color: #777777;
-      letter-spacing: 0.08em;
+    .ethos p {
+      font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+      font-weight: 400;
+      margin: 0.55rem 0;
+      color: var(--fg);
     }
-  </style>
-</head>
 
-<body>
-  <div class="container">
-    <div class="copy">
-      <p><strong>Stories from close enough to feel.</strong></p>
-      <p>Made with restraint.</p>
-      <p>Crafted in proximity.</p>
-    </div>
+    /* Bottom-right mark */
+    .mark {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      text-align: right;
+      line-height: 1.15;
+      z-index: 50;
+      user-select: none;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 900ms ease, transform 900ms ease;
+    }
 
-    <footer>
-      © Circa 71
-    </footer>
-  </div>
-</body>
-</html>
+    .mark.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .mark .c71 {
+      font-size: 0.95rem;
+      letter-spacing: 0.12em;
+      text-transform: lowercase;
+      color: var(--fg);
+    }
+
+    .mark .signed {
+      margin-top: 6px;
+      font-size: 0.85rem;
+      font-style: italic;
+      color: var(--muted);
+    }
+
+    /* Gallery */
+    .gallery {
+      width: 100%;
+      padding: 6vh 6vw 10vh;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 22px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    figure {
+      margin: 0;
+      overflow: hidden;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.02);
+    }
+
+    img {
+      width: 100%;
+      height: auto;
+      display: block;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 900ms ease, transform 900ms ease;
+      will-change: opacity, transform;
+    }
+
+    img.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Subtle spacing on large screens */
+    @media (min-width: 860px) {
+      .grid { gap: 28px;
