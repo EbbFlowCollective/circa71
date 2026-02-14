@@ -115,6 +115,35 @@
       .stage { transition: none; opacity: 1; }
       .slide { transition: none; }
     }
+/* --- Below-fold details section --- */
+.details {
+  padding: 14vh 7vw 12vh;
+  background: #000;
+}
+
+.details-wrap {
+  max-width: 720px;
+}
+
+.details-lede,
+.details-loc {
+  margin: 0 0 18px 0;
+  line-height: 1.6;
+  opacity: 0.85;
+}
+
+.details-list {
+  margin: 0 0 18px 18px;
+  padding: 0;
+  line-height: 1.7;
+  opacity: 0.85;
+}
+
+.details-list li {
+  margin: 0 0 6px 0;
+}
+
+    
   </style>
 </head>
 
@@ -138,11 +167,30 @@ Stories from close enough to feel.
 Voices entrusted, faithfully kept.
 Crafted in proximity.
 </p>
-    <div class="threshold">By referral and invitation.</div>
+    <div class="threshold">By with conversation.</div>
     <div class="contact">
       <a href="mailto:hello@circa71.co">hello@circa71.co</a>
     </div>
   </section>
+
+  <section class="details" aria-label="Circa 71 service details">
+  <div class="details-wrap">
+    <p class="details-lede">
+      Guided conversations, captured in frame and preserved in full — audio and visual —
+      preserving voice, memory, and message while they are still here.
+    </p>
+
+    <ul class="details-list">
+      <li>Preparation conversation</li>
+      <li>Unhurried filmed interview (minimum two hours)</li>
+      <li>Full delivery: raw audio + video, intact</li>
+    </ul>
+
+    <p class="details-loc">
+      Based in Southern California. Available nationally and abroad.
+    </p>
+  </div>
+</section>
 
   <script>
     // IMPORTANT: match filenames EXACTLY (case-sensitive on GitHub Pages)
